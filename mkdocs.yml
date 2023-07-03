@@ -1,0 +1,27 @@
+site_name: Cluster Test Wiki
+dev_addr: "127.0.0.1:8008"
+
+theme:
+  name: readthedocs
+  highlightjs: true
+
+
+nav:
+  - Overview:
+      - Introduction: 'overview/introduction.md'
+  - Cluster Probe:
+      - Requirements: 'cluster-probe/introduction.md'
+      - Architecture: 'cluster-probe/architecture.md'
+      - Design: 'cluster-probe/introduction.md'
+      - Implementation: 'cluster-probe/introduction.md'
+      - Testing: 'cluster-probe/introduction.md'
+      - User guide: 'cluster-probe/introduction.md'
+      - Api specification: 'cluster-probe/introduction.md'
+  - Probe Builder:
+      - Requirements: 'cluster-probe/introduction.md'
+      - Architecture: 'cluster-probe/introduction.md'
+      - Design: 'cluster-probe/introduction.md'
+      - Implementation: 'cluster-probe/introduction.md'
+      - Testing: 'cluster-probe/introduction.md'
+      - User guide: 'cluster-probe/introduction.md'
+      - Api specification: 'cluster-probe/introduction.md'
