@@ -1,17 +1,15 @@
-# Welcome to MkDocs
+# Welcome to Cluster Test Wiki
 
-For full documentation visit [mkdocs.org](https://www.mkdocs.org).
+This documentation provides comprehensive information and guidance for the Cluster Probe and Probe Builder projects. These software packages are designed to
+facilitate testing of Kubernetes clusters in terms of scalability and performance. The primary objective of these projects is to create a software-based
+solution for testing typical cloud service use cases within the context of reCluster projects, a self-aware cloud orchestration system. Through this
+documentation, you will gain insights into the functionalities, architecture, implementation, testing, API specifications, and user guide for both Cluster Probe
+and Probe Builder. Whether you are new to testing Kubernetes clusters or seeking to enhance your existing knowledge, this documentation will serve as a valuable
+resource to understand and utilize these tools effectively.
 
-## Commands
+## Table of contents
 
-* `mkdocs new [dir-name]` - Create a new project.
-* `mkdocs serve` - Start the live-reloading docs server.
-* `mkdocs build` - Build the documentation site.
-* `mkdocs -h` - Print help message and exit.
+1. [Overview](overview/introduction.md)
+2. [Probe builder](probe-builder/requirements.md)
+3. [Cluster probe](cluster-probe/requirements.md)
 
-## Project layout
-
-    mkdocs.yml    # The configuration file.
-    docs/
-        index.md  # The documentation homepage.
-        ...       # Other markdown pages, images and other files.
