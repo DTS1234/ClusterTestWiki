@@ -4,9 +4,12 @@ Welcome to the documentation of Cluster Probe and Probe Builder. This documentat
 Probe Builder projects, which are software packages designed for testing scalability and performance in Kubernetes clusters. The main objective of these
 projects is to create a software-based solution for testing typical cloud service use cases within the context of
 the [reCluster](https://github.com/carlocorradini/reCluster) project, a self-aware cloud
-orchestration system.
+orchestration system. The reCluster architecture presents a sustainable approach to data centre operations, leveraging upcycled hardware and prioritizing
+resource reduction. It seeks to minimize the environmental impact associated with computing while still offering viable computing capabilities. The main goal of
+the both Cluster Probe and Probe Builder is to be deployed on the reCluster and truly verify the computational capabilities of the system.
 
-Cluster Probe and Probe Builder offer a robust and user-friendly solution for testing the capabilities and limits of Kubernetes clusters. They enable
+However, Cluster Probe and Probe Builder offer a robust and user-friendly solution for testing the capabilities and limits of all the Kubernetes clusters. They
+enable
 application developers, system administrators, and testers to assess the performance, resilience, and efficiency of their cluster deployments.
 
 Cluster Probe allows users to conduct thorough performance tests by simulating real-world scenarios and evaluating the cluster's response under various
@@ -19,9 +22,6 @@ control over the testing process.
 The documentation is structured to cover the requirements, architecture, implementation, testing methodologies, API specifications, and user guidance for both
 Cluster Probe and Probe Builder. Whether you are new to these projects or seeking advanced configuration options, this documentation serves as a comprehensive
 resource for effectively utilizing these testing tools.
-
-Users are invited to explore the documentation and leverage the capabilities of Cluster Probe and Probe Builder to ensure the optimal performance and
-reliability of their Kubernetes clusters. This documentation aims to provide the necessary guidance for users to effectively utilize these testing tools.
 
 ### Requirements and Dependencies
 
