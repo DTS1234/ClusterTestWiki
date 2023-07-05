@@ -10,7 +10,7 @@ identified, they also constitute the most important features of the Cluster Prob
 2. The system shall be able to produce intense I/O operations.
 3. The system shall be able to produce long-lasting or time specified intensive cpu tasks.
 4. The system shall be able to produce multiple asynchronous computing tasks.
-5. The system shall be able to receive and process data through and HTTP requests.
+5. The system shall be able to receive data through the HTTP protocol.
 
 ### Non-functional requirements
 
