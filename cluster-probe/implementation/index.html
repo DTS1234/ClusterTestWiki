@@ -124,6 +124,23 @@ in the 'test' folder, then the number of files will be created based on paramete
 <p>After all the operations are performed files and the 'test' directory are deleted:
 <img alt="img.png" src="../../img/delete-files.png" /></p>
 <h3 id="stress-ng">Stress ng</h3>
+<p>In order to implement the stress ng jobs invocation, <code>TestService</code> creates an appropiate stress ng job based on the <code>TestSpecification</code> parameters,
+not all parameters are required so mostly <code>TestService</code> class implements the logic for creating the job accurately.</p>
+<p><img alt="img.png" src="../../img/mappingComands.png" /></p>
+<hr>
+
+<p><img alt="img.png" src="../../img/testSpecifciation.png" /></p>
+<figure>
+<figcaption align="center"><em>Specification class</em></figcaption>
+</figure>
+
+<p>for each parameter in the specification there is an according mapping method in the service class that based on whether the parameter is correct or not it
+creates an appropriate part of the command. There is also an option for receiving a plain command as a string, if this one is available and
+the <code>isCommand</code> flag is set to <code>true</code> the rest of the parameters will be ignored. </p>
+<p><img alt="img.png" src="../../img/isCommand.png" /></p>
+<p>Whenever the <code>durationInSeconds</code> parameter will not be available there is a default 24 hours value set in the <code>mapTestTimeCommand</code>:
+<img alt="img.png" src="../../img/test-time-command.png" /></p>
+<h3 id="transactional">Transactional</h3>
               
             </div>
           </div><footer>
