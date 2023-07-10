@@ -19,8 +19,9 @@ performed based on the data specified in FileSystemSpecification class object.
 there is only one public method implemented for the `FileOperationsService` all the files created will be stored under the projects directory
 in the 'test' folder, then the number of files will be created based on parameters specified in the specification object.
 
+![img2.png](../img/sf.png)
+
 <figure>
-<img src="../img/specification-files.png" alt="spec-files">
 <figcaption align="center"><em>Specification class</em></figcaption>
 </figure>
 

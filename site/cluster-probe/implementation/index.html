@@ -49,11 +49,11 @@
               <ul class="current">
                   <li class="toctree-l1"><a class="reference internal" href="../requirements/">Requirements</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../architecture/">Architecture</a>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="./">Implementation</a>
+    <ul class="current">
+    </ul>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../design/">Design</a>
-                  </li>
-                  <li class="toctree-l1 current"><a class="reference internal current" href="./">Implementation</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../testing/">Testing</a>
                   </li>
@@ -65,8 +65,6 @@
               <p class="caption"><span class="caption-text">Probe Builder</span></p>
               <ul>
                   <li class="toctree-l1"><a class="" href="../../probe-builder/introduction.md">Requirements</a>
-                  </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../probe-builder/architecture/">Architecture</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../probe-builder/design/">Design</a>
                   </li>
@@ -103,13 +101,35 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                
+                <h3 id="introduction">Introduction</h3>
+<p>Cluster Probe is written in Java 17, and it uses the Spring Boot Framework.
+Each feature's code is stored in its own java package.</p>
+<p>All packages expose a service class that can be injected as a dependency to the
+Controller, the REST api web layer class. Any error that has occurred during the test is handled by the ErrorHandler class that specifies an appropriate
+message and returns the error response entity.</p>
+<p><img alt="img.png" src="../../img/cluster-probe-packages.png" /></p>
+<h3 id="file-operations">File operations</h3>
+<p>FileOperations service is using java standard development kit libraries to implement the creation, update and the deletion for files. Those operations are
+performed based on the data specified in FileSystemSpecification class object.</p>
+<p><img alt="img1.png" src="../../img/file-operations.png" /></p>
+<p>there is only one public method implemented for the <code>FileOperationsService</code> all the files created will be stored under the projects directory
+in the 'test' folder, then the number of files will be created based on parameters specified in the specification object.</p>
+<figure>
+<img src="../img/specification-files.png" alt="spec-files">
+<figcaption align="center"><em>Specification class</em></figcaption>
+</figure>
+
+<p>If the <code>fileContent</code> parameter will be null or empty no write operations will be performed.</p>
+<p><img alt="img.png" src="../../img/file-contents-if.png" /></p>
+<p>After all the operations are performed files and the 'test' directory are deleted:
+<img alt="img.png" src="../../img/delete-files.png" /></p>
+<h3 id="stress-ng">Stress ng</h3>
               
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../design/" class="btn btn-neutral float-left" title="Design"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../testing/" class="btn btn-neutral float-right" title="Testing">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../requirements/" class="btn btn-neutral float-left" title="Requirements"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../design/" class="btn btn-neutral float-right" title="Design">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -132,10 +152,10 @@
   <span class="rst-current-version" data-toggle="rst-current-version">
     
     
-      <span><a href="../design/" style="color: #fcfcfc">&laquo; Previous</a></span>
+      <span><a href="../requirements/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
-      <span><a href="../testing/" style="color: #fcfcfc">Next &raquo;</a></span>
+      <span><a href="../design/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>
