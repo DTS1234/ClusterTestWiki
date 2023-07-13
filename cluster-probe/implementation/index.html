@@ -152,6 +152,7 @@ table. The class has the following attributes:</p>
 <li><code>courses</code>: A many-to-many relationship with the <code>Course</code> class, representing the courses that the student is enrolled in. The relationship is defined using
   the <code>@ManyToMany</code> annotation, and the mapping is managed through a join table named "course_signed".</li>
 </ul>
+<p><img alt="img.png" src="../student-entity.png" /></p>
 <p>The <code>Course</code> class represents a course offered in the educational domain. It has similar annotations and attributes as the <code>Student</code> class:</p>
 <ul>
 <li><code>id</code>: The unique identifier for the course.</li>
@@ -159,6 +160,7 @@ table. The class has the following attributes:</p>
 <li><code>students</code>: A bidirectional many-to-many relationship with the <code>Student</code> class. It is mapped by the <code>courses</code> attribute in the <code>Student</code> class using
   the <code>mappedBy</code> attribute of the <code>@ManyToMany</code> annotation. This establishes the inverse side of the relationship.</li>
 </ul>
+<p><img alt="img.png" src="../course-entity.png" /></p>
 <p>The database model for these entities can be visualized as follows:</p>
 <pre><code>+--------------+     +-------------------+     +------------------+
 |   Student    |     |   Course          |     |   course_signed  |
@@ -171,8 +173,11 @@ table. The class has the following attributes:</p>
 The <code>student_id</code> and <code>course_id</code> columns in the <code>course_signed</code> table establish the associations between students and courses.</p>
 <p>This database model allows for a many-to-many relationship between students and courses, enabling students to be enrolled in multiple courses, and courses to
 have multiple students.</p>
-<p>In order to manipulate the database entities two different repository classes were provided. The Spring Data JPA interfaces JpaRepository<Course, Long> and</p>
-<p>JpaRepository<Student, Long> are part of the Spring Data JPA framework, which provides a set of
+<p>In order to manipulate the database entities two different repository classes were provided.</p>
+<p><img alt="img.png" src="../../img/course-repo.png" />
+<img alt="img.png" src="../../img/course-repo.png" /></p>
+<p>The Spring Data JPA interfaces JpaRepository<Course, Long> and
+JpaRepository<Student, Long> are part of the Spring Data JPA framework, which provides a set of
 abstractions and utilities for working with relational databases using the Java Persistence API (JPA).</p>
 <p>These interfaces provide a high-level abstraction for performing common database operations on the Course and Student entities without the need for writing
 boilerplate code. Some benefits of using Spring Data JPA interfaces include:</p>
@@ -186,6 +191,13 @@ boilerplate code. Some benefits of using Spring Data JPA interfaces include:</p>
 </ol>
 <p>Especially the third feature is important from the perspective of this work, as it allows us to test how multiple transactional operations will work on the
 system.</p>
+<p>Both repositories are used in a SchoolService class. The SchoolService class is a Spring service component that provides business logic and acts as an
+intermediary between the controller layer and the data access layer (repositories) in the application.
+It exposes methods for creating students and courses (<code>createStudent</code> and <code>createCourse</code>). These methods utilize the respective
+repository's <code>save</code> method to persist the entities in the database. The getStudents, getCourses, and getStudentsForCourse methods utilize the repository's query
+methods to retrieve entities from the database. The findAll method fetches all students or courses, while findById retrieves a specific student or course based
+on the provided ID. Spring manages transactions implicitly for the service methods. Each method operates within a transactional context, ensuring data
+consistency and integrity.</p>
               
             </div>
           </div><footer>
