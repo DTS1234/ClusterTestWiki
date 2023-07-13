@@ -68,12 +68,16 @@ table. The class has the following attributes:
 - `courses`: A many-to-many relationship with the `Course` class, representing the courses that the student is enrolled in. The relationship is defined using
   the `@ManyToMany` annotation, and the mapping is managed through a join table named "course_signed".
 
+![img.png](student-entity.png)
+
 The `Course` class represents a course offered in the educational domain. It has similar annotations and attributes as the `Student` class:
 
 - `id`: The unique identifier for the course.
 - `name`: The name of the course.
 - `students`: A bidirectional many-to-many relationship with the `Student` class. It is mapped by the `courses` attribute in the `Student` class using
   the `mappedBy` attribute of the `@ManyToMany` annotation. This establishes the inverse side of the relationship.
+
+![img.png](course-entity.png)
 
 The database model for these entities can be visualized as follows:
 
@@ -92,10 +96,12 @@ The `student_id` and `course_id` columns in the `course_signed` table establish 
 This database model allows for a many-to-many relationship between students and courses, enabling students to be enrolled in multiple courses, and courses to
 have multiple students.
 
-In order to manipulate the database entities two different repository classes were provided. The Spring Data JPA interfaces JpaRepository<Course, Long> and
+In order to manipulate the database entities two different repository classes were provided.
 
+![img.png](../img/course-repo.png)
+![img.png](../img/course-repo.png)
 
-
+The Spring Data JPA interfaces JpaRepository<Course, Long> and
 JpaRepository<Student, Long> are part of the Spring Data JPA framework, which provides a set of
 abstractions and utilities for working with relational databases using the Java Persistence API (JPA).
 
@@ -111,3 +117,12 @@ boilerplate code. Some benefits of using Spring Data JPA interfaces include:
 
 Especially the third feature is important from the perspective of this work, as it allows us to test how multiple transactional operations will work on the
 system.
+
+Both repositories are used in a SchoolService class. The SchoolService class is a Spring service component that provides business logic and acts as an
+intermediary between the controller layer and the data access layer (repositories) in the application.
+It exposes methods for creating students and courses (`createStudent` and `createCourse`). These methods utilize the respective
+repository's `save` method to persist the entities in the database. The getStudents, getCourses, and getStudentsForCourse methods utilize the repository's query
+methods to retrieve entities from the database. The findAll method fetches all students or courses, while findById retrieves a specific student or course based
+on the provided ID. Spring manages transactions implicitly for the service methods. Each method operates within a transactional context, ensuring data
+consistency and integrity.
+

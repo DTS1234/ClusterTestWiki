@@ -136,11 +136,56 @@ not all parameters are required so mostly <code>TestService</code> class impleme
 
 <p>for each parameter in the specification there is an according mapping method in the service class that based on whether the parameter is correct or not it
 creates an appropriate part of the command. There is also an option for receiving a plain command as a string, if this one is available and
-the <code>isCommand</code> flag is set to <code>true</code> the rest of the parameters will be ignored. </p>
+the <code>isCommand</code> flag is set to <code>true</code> the rest of the parameters will be ignored.</p>
 <p><img alt="img.png" src="../../img/isCommand.png" /></p>
 <p>Whenever the <code>durationInSeconds</code> parameter will not be available there is a default 24 hours value set in the <code>mapTestTimeCommand</code>:
 <img alt="img.png" src="../../img/test-time-command.png" /></p>
 <h3 id="transactional">Transactional</h3>
+<p>In order to give the users an availability to test multiple database connections with transactional operations, a small example for the school domain have been
+created. It represents a classical model of a student - course many to many relationship.</p>
+<p>The <code>Student</code> class represents a student in the educational domain. It is annotated with <code>@Entity</code> to indicate that it is a JPA entity mapped to a database
+table. The class has the following attributes:</p>
+<ul>
+<li><code>id</code>: A unique identifier for the student, annotated with <code>@Id</code> and <code>@GeneratedValue</code> to indicate that it is the primary key and its value is automatically
+  generated.</li>
+<li><code>name</code>: The name of the student, annotated with <code>@Column</code> to specify the mapping to the corresponding column in the database table.</li>
+<li><code>courses</code>: A many-to-many relationship with the <code>Course</code> class, representing the courses that the student is enrolled in. The relationship is defined using
+  the <code>@ManyToMany</code> annotation, and the mapping is managed through a join table named "course_signed".</li>
+</ul>
+<p>The <code>Course</code> class represents a course offered in the educational domain. It has similar annotations and attributes as the <code>Student</code> class:</p>
+<ul>
+<li><code>id</code>: The unique identifier for the course.</li>
+<li><code>name</code>: The name of the course.</li>
+<li><code>students</code>: A bidirectional many-to-many relationship with the <code>Student</code> class. It is mapped by the <code>courses</code> attribute in the <code>Student</code> class using
+  the <code>mappedBy</code> attribute of the <code>@ManyToMany</code> annotation. This establishes the inverse side of the relationship.</li>
+</ul>
+<p>The database model for these entities can be visualized as follows:</p>
+<pre><code>+--------------+     +-------------------+     +------------------+
+|   Student    |     |   Course          |     |   course_signed  |
++--------------+     +-------------------+     +------------------+
+| id (PK)      |&lt;---&gt;| id (PK)           |     | student_id (FK)  |
+| name         |     | name              |     | course_id (FK)   |
++--------------+     +-------------------+     +------------------+
+</code></pre>
+<p>The <code>Student</code> and <code>Course</code> tables represent the entities, and the <code>course_signed</code> table serves as the join table for the many-to-many relationship between them.
+The <code>student_id</code> and <code>course_id</code> columns in the <code>course_signed</code> table establish the associations between students and courses.</p>
+<p>This database model allows for a many-to-many relationship between students and courses, enabling students to be enrolled in multiple courses, and courses to
+have multiple students.</p>
+<p>In order to manipulate the database entities two different repository classes were provided. The Spring Data JPA interfaces JpaRepository<Course, Long> and</p>
+<p>JpaRepository<Student, Long> are part of the Spring Data JPA framework, which provides a set of
+abstractions and utilities for working with relational databases using the Java Persistence API (JPA).</p>
+<p>These interfaces provide a high-level abstraction for performing common database operations on the Course and Student entities without the need for writing
+boilerplate code. Some benefits of using Spring Data JPA interfaces include:</p>
+<ol>
+<li>Query Methods: Spring Data JPA interfaces allow you to define custom query methods by simply declaring method signatures. The framework automatically
+   generates the necessary SQL queries based on the method names, reducing the need for manual query creation.</li>
+<li>CRUD Operations: The interfaces provide methods for performing CRUD (Create, Read, Update, Delete) operations on the entities. This eliminates the need to
+   manually write SQL statements or implement these operations yourself.</li>
+<li>Transaction Management: The interfaces integrate with Spring's transaction management capabilities, ensuring that database operations are performed within a
+   transactional context.</li>
+</ol>
+<p>Especially the third feature is important from the perspective of this work, as it allows us to test how multiple transactional operations will work on the
+system.</p>
               
             </div>
           </div><footer>
