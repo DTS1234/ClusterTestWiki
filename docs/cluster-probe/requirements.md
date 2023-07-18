@@ -1,6 +1,6 @@
 ## Introduction
 
-As it was mentioned before Cluster Probe is meant to run on any container, however it's main goal is to be a load receiver for Kubernetes cluster especially for
+As it was mentioned before Cluster Probe is meant to run on any container, however its main goal is to be a load receiver for Kubernetes cluster especially for
 the reCluster architecture. In order to make the testing process most effective there are several functional and non-functional requirements that were
 identified, they also constitute the most important features of the Cluster Probe.
 

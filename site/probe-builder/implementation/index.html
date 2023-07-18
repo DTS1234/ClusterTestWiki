@@ -49,15 +49,15 @@
               <ul>
                   <li class="toctree-l1"><a class="reference internal" href="../../cluster-probe/requirements/">Requirements</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../cluster-probe/implementation/">Implementation</a>
-                  </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../cluster-probe/design/">Design</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../cluster-probe/implementation/">Implementation</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../cluster-probe/testing/">Testing</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../cluster-probe/user-guide/">User guide</a>
                   </li>
-                  <li class="toctree-l1"><a class="" href="../../cluster-probe/api-specification.md">Api specification</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../cluster-probe/api-specification/">Api specification</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">Probe Builder</span></p>
@@ -67,6 +67,20 @@
                   <li class="toctree-l1"><a class="reference internal" href="../design/">Design</a>
                   </li>
                   <li class="toctree-l1 current"><a class="reference internal current" href="./">Implementation</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#introduction">Introduction</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#jmeterservice">JmeterService</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#jmeterrepository">JmeterRepository</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#report-creator">Report Creator</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#controller">Controller</a>
+    </li>
+    </ul>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../testing/">Testing</a>
                   </li>
@@ -99,7 +113,24 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                
+                <h2 id="implementation">Implementation</h2>
+<h3 id="introduction">Introduction</h3>
+<p>ProbeBuilder simillary as ClusterProbe is written in <a href="https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html">Java 17</a>, and it also uses
+the <a href="https://spring.io/projects/spring-boot">Spring Boot Framework</a>.</p>
+<p>More than that however there are few dependencies that are worth mentioning regarding the implementation part of the probe builder:</p>
+<ul>
+<li>JMeter Java API: Used for creating and executing load tests within the application.</li>
+<li>Tablesaw: Employed for data manipulation and analysis in a tabular format.</li>
+<li>Maven: The build tool utilized for managing dependencies and project build processes.</li>
+<li>Vanilla JavaScript and HTML: Used to build a simple yet effective frontend for the application.</li>
+</ul>
+<p><img alt="img.png" src="../img.png" /></p>
+<p>The main server side code is implemented in the jmeter package that stores all the important classes connected with the jmeter integration as well as reporting
+and test results data management.</p>
+<h3 id="jmeterservice">JmeterService</h3>
+<h4 id="jmeterrepository">JmeterRepository</h4>
+<h3 id="report-creator">Report Creator</h3>
+<h3 id="controller">Controller</h3>
               
             </div>
           </div><footer>
