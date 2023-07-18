@@ -98,7 +98,46 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <p>Probe builder</p>
+                <h2 id="introduction">Introduction</h2>
+<p>ProbeBuilder main purpose is to facilitate the process of creation and execution of the jmeter tests for ClusterProbe containers running in the Kubernetes. To
+clearly identify the goals of this software there are a few functional and non-functional requirements that have been identified and described, and the same as
+in case of Cluster Probe the also constitute its features.</p>
+<h3 id="functional-requirements">Functional Requirements:</h3>
+<ol>
+<li>
+<p>Users shall be able to create test specifications using a user-friendly interface, providing details like the number of threads,
+   ramp-up period, endpoint URLs, request methods, and payload data.</p>
+</li>
+<li>
+<p>The system shall generate JMeter test plans based on the test specifications, including:</p>
+<ul>
+<li>the number of threads</li>
+<li>request configurations</li>
+<li>payload values</li>
+</ul>
+</li>
+<li>
+<p>The system shall be able to execute the generated JMeter test plans on the target Kubernetes cluster using the JMeter Java API.</p>
+</li>
+<li>
+<p>After test execution, the system shall collect and store the results, including:</p>
+</li>
+<li>response times,</li>
+<li>success rates</li>
+<li>
+<p>errors encountered during the tests</p>
+</li>
+<li>
+<p>The system shall create reports with plots and charts representing the test results, making it easy for users to analyze the
+   performance of their Kubernetes cluster.</p>
+</li>
+</ol>
+<h3 id="non-functional-requirements">Non-functional requirements</h3>
+<ol>
+<li>The system shall be able to handle a large number of concurrent users and execute JMeter tests efficiently without significant delays.</li>
+<li>The user interface should be intuitive and easy to navigate, ensuring that users can create and manage test specifications without extensive training.</li>
+<li>The system shall be scalable, allowing it to support a growing number of test specifications and users as the demand increases.</li>
+</ol>
               
             </div>
           </div><footer>
