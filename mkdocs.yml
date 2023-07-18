@@ -3,7 +3,7 @@ dev_addr: "127.0.0.1:8008"
 
 theme:
   name: readthedocs
-  highlightjs: true
+  highlights: true
 
 
 nav:
@@ -11,8 +11,8 @@ nav:
       - Introduction: 'overview/introduction.md'
   - Cluster Probe:
       - Requirements: 'cluster-probe/requirements.md'
-      - Implementation: 'cluster-probe/implementation.md'
       - Design: 'cluster-probe/design.md'
+      - Implementation: 'cluster-probe/implementation.md'
       - Testing: 'cluster-probe/testing.md'
       - User guide: 'cluster-probe/user-guide.md'
       - Api specification: 'cluster-probe/api-specification.md'
