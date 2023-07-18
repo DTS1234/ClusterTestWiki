@@ -49,17 +49,25 @@
               <ul class="current">
                   <li class="toctree-l1"><a class="reference internal" href="../requirements/">Requirements</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../design/">Design</a>
+                  </li>
                   <li class="toctree-l1 current"><a class="reference internal current" href="./">Implementation</a>
     <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#introduction">Introduction</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#file-operations">File operations</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#stress-ng">Stress ng</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#transactional">Transactional</a>
+    </li>
     </ul>
-                  </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../design/">Design</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../testing/">Testing</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../user-guide/">User guide</a>
                   </li>
-                  <li class="toctree-l1"><a class="" href="../api-specification.md">Api specification</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../api-specification/">Api specification</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">Probe Builder</span></p>
@@ -101,8 +109,10 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h3 id="introduction">Introduction</h3>
-<p>Cluster Probe is written in Java 17, and it uses the Spring Boot Framework.
+                <h2 id="implementation">Implementation</h2>
+<h3 id="introduction">Introduction</h3>
+<p>Cluster Probe is written in <a href="https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html">Java 17</a>, and it uses
+the <a href="https://spring.io/projects/spring-boot">Spring Boot Framework</a>.
 Each feature's code is stored in its own java package.</p>
 <p>All packages expose a service class that can be injected as a dependency to the
 Controller, the REST api web layer class. Any error that has occurred during the test is handled by the ErrorHandler class that specifies an appropriate
@@ -123,8 +133,19 @@ in the 'test' folder, then the number of files will be created based on paramete
 <p><img alt="img.png" src="../../img/file-contents-if.png" /></p>
 <p>After all the operations are performed files and the 'test' directory are deleted:
 <img alt="img.png" src="../../img/delete-files.png" /></p>
+<p>The <code>FileService</code> can be invoked from the <code>Controller</code> class by calling an HTTP POST method.</p>
+<pre><code>@PostMapping(&quot;/api/file-operations&quot;)
+public String createFiles(@RequestBody FileSystemSpecification spec) {
+    fileOperationsService.testFileSystem(spec);
+    return String.format(&quot;File operations performed based on spec %s&quot;, spec);
+}
+</code></pre>
+<p>Here, <code>createFiles</code> method handles the POST request for the file-operations endpoint, accepts a <code>FileSystemSpecification</code> object in the request body, and
+delegates the file operations logic to the <code>fileOperationsService</code>.
+It responds with a message confirming the successful execution of the file operations based on the
+provided specification.</p>
 <h3 id="stress-ng">Stress ng</h3>
-<p>In order to implement the stress ng jobs invocation, <code>TestService</code> creates an appropiate stress ng job based on the <code>TestSpecification</code> parameters,
+<p>In order to implement the stress ng jobs invocation, <code>TestService</code> creates an appropriate stress ng job based on the <code>TestSpecification</code> parameters,
 not all parameters are required so mostly <code>TestService</code> class implements the logic for creating the job accurately.</p>
 <p><img alt="img.png" src="../../img/mappingComands.png" /></p>
 <hr>
@@ -140,6 +161,25 @@ the <code>isCommand</code> flag is set to <code>true</code> the rest of the para
 <p><img alt="img.png" src="../../img/isCommand.png" /></p>
 <p>Whenever the <code>durationInSeconds</code> parameter will not be available there is a default 24 hours value set in the <code>mapTestTimeCommand</code>:
 <img alt="img.png" src="../../img/test-time-command.png" /></p>
+<p>The <code>TestService</code> can be invoked from the <code>Controller</code> class by calling an HTTP POST method.</p>
+<pre><code>@PostMapping(&quot;/api/job&quot;)
+public String startJob(@RequestBody TestSpecification specification) {
+
+    log.info(&quot;Received job specification: &quot; + specification);
+    boolean jobStarted = testService.startJobSpecification(specification);
+
+    if (jobStarted) {
+        log.info(&quot;Job started for specification: &quot; + specification);
+    } else {
+        log.error(&quot;Job failed to start for specification: &quot; + specification);
+    }
+
+    return &quot;Job started&quot;;
+}
+</code></pre>
+<p>The method delegates the processing of the request to the <code>testService</code> by calling the <code>startJobSpecification</code> method and passing the <code>specification</code> object.
+Depending on the result returned by the service layer, the method logs appropriate messages. If the job is successfully started, it logs that the job has
+started. If the job fails to start, it logs an error message. The method returns a simple string message indicating that the job has started.</p>
 <h3 id="transactional">Transactional</h3>
 <p>In order to give the users an availability to test multiple database connections with transactional operations, a small example for the school domain have been
 created. It represents a classical model of a student - course many to many relationship.</p>
@@ -152,7 +192,7 @@ table. The class has the following attributes:</p>
 <li><code>courses</code>: A many-to-many relationship with the <code>Course</code> class, representing the courses that the student is enrolled in. The relationship is defined using
   the <code>@ManyToMany</code> annotation, and the mapping is managed through a join table named "course_signed".</li>
 </ul>
-<p><img alt="img.png" src="../student-entity.png" /></p>
+<p><img alt="img.png" src="../../img/student-entity.png" /></p>
 <p>The <code>Course</code> class represents a course offered in the educational domain. It has similar annotations and attributes as the <code>Student</code> class:</p>
 <ul>
 <li><code>id</code>: The unique identifier for the course.</li>
@@ -160,7 +200,7 @@ table. The class has the following attributes:</p>
 <li><code>students</code>: A bidirectional many-to-many relationship with the <code>Student</code> class. It is mapped by the <code>courses</code> attribute in the <code>Student</code> class using
   the <code>mappedBy</code> attribute of the <code>@ManyToMany</code> annotation. This establishes the inverse side of the relationship.</li>
 </ul>
-<p><img alt="img.png" src="../course-entity.png" /></p>
+<p><img alt="img.png" src="../../img/course-entity.png" /></p>
 <p>The database model for these entities can be visualized as follows:</p>
 <pre><code>+--------------+     +-------------------+     +------------------+
 |   Student    |     |   Course          |     |   course_signed  |
@@ -198,12 +238,121 @@ repository's <code>save</code> method to persist the entities in the database. T
 methods to retrieve entities from the database. The findAll method fetches all students or courses, while findById retrieves a specific student or course based
 on the provided ID. Spring manages transactions implicitly for the service methods. Each method operates within a transactional context, ensuring data
 consistency and integrity.</p>
+<pre><code class="language-java">
+@RequiredArgsConstructor
+@Service
+public class SchoolService {
+
+    private final CourseRepository courseRepository;
+    private final StudentRepository studentRepository;
+
+    public Student createStudent(Student student) {
+        return studentRepository.save(student);
+    }
+
+    public Course createCourse(Course course) {
+        return courseRepository.save(course);
+    }
+
+    public Student addCourseForStudent(Long studentId, Long courseId) {
+        Course courseFound = courseRepository.findById(courseId).orElseThrow();
+        Student studentFound = studentRepository.findById(studentId).orElseThrow();
+
+        studentFound.courses.add(courseFound);
+
+        return studentRepository.save(studentFound);
+    }
+
+    public List&lt;Student&gt; getStudents() {
+        return studentRepository.findAll();
+    }
+
+    public List&lt;Course&gt; getCourses() {
+        return courseRepository.findAll();
+    }
+
+    public List&lt;Student&gt; getStudentsForCourse(Long courseId) {
+        Course course = courseRepository.findById(courseId).orElseThrow();
+        return course.students;
+    }
+
+    public void clearAll() {
+        studentRepository.deleteAll();
+    }
+}
+</code></pre>
+<p>The final implementation layer for the transactional db testing feature is a <code>SchoolController</code> class.</p>
+<p>The SchoolController class is a Spring REST controller responsible for handling HTTP requests related to the school entities. It receives requests from clients,
+invokes the appropriate methods in the SchoolService, and returns the response.</p>
+<p>Each method in the controller is annotated with an HTTP method mapping annotation (@PostMapping, @GetMapping). These annotations specify the URL path for the
+corresponding request and the HTTP method to be used.</p>
+<p>Methods like addStudent and addCourse use the @RequestBody annotation to deserialize the request body JSON into Java objects (Student and Course, respectively).</p>
+<p>Methods like addCourseForStudent and getAllStudentsForCourse utilize path variables (@PathVariable) to extract dynamic values from the URL path.</p>
+<p>The controller uses a logger (slf4j) to log important information related to the incoming requests and performed operations.</p>
+<p>The @Transactional annotation is used on the getAllStudentsForCourse method to indicate that the method operates within a transactional context. This ensures
+data consistency and integrity when retrieving students for a specific course.</p>
+<p>he controller helps in separating the concerns between handling the web layer and implementing the business logic in the service layer.
+By using Spring annotations, the SchoolController simplifies the development of RESTful APIs and promotes the adoption of best practices in building web
+services.</p>
+<pre><code class="language-java">
+@RestController
+@RequiredArgsConstructor
+@Slf4j
+public class SchoolController {
+
+    private final SchoolService schoolService;
+
+    @PostMapping(&quot;/create/student&quot;)
+    public Student addStudent(@RequestBody Student student) {
+
+        log.info(&quot;Adding a student : &quot; + student);
+        return schoolService.createStudent(student);
+    }
+
+    @PostMapping(&quot;/create/course&quot;)
+    public Course addCourse(@RequestBody Course course) {
+        log.info(&quot;Adding a course : &quot; + course);
+        return schoolService.createCourse(course);
+    }
+
+    @PostMapping(&quot;/add/{studentId}/{courseId}&quot;)
+    public Student addCourseForStudent(@PathVariable Long studentId, @PathVariable Long courseId) {
+        log.info(&quot;Adding a course : &quot; + courseId + &quot; for student &quot; + studentId);
+        return schoolService.addCourseForStudent(studentId, courseId);
+    }
+
+    @GetMapping(&quot;/students/all&quot;)
+    public List&lt;Student&gt; getAllStudents() {
+        log.info(&quot;Retrieving students ...&quot;);
+        return schoolService.getStudents();
+    }
+
+    @GetMapping(&quot;/courses/all&quot;)
+    public List&lt;Course&gt; getAllCourses() {
+        log.info(&quot;Retrieving courses ...&quot;);
+        return schoolService.getCourses();
+    }
+
+    @GetMapping(&quot;/courses/{courseId}/students&quot;)
+    @Transactional
+    public List&lt;Student&gt; getAllStudentsForCourse(@PathVariable Long courseId) {
+        log.info(&quot;Students for course : &quot; + courseId);
+        return schoolService.getStudentsForCourse(courseId);
+    }
+
+    @PostMapping(&quot;/clear&quot;)
+    public String clearAll() {
+        schoolService.clearAll();
+        return &quot;DB cleared&quot;;
+    }
+}
+</code></pre>
               
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../requirements/" class="btn btn-neutral float-left" title="Requirements"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../design/" class="btn btn-neutral float-right" title="Design">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../design/" class="btn btn-neutral float-left" title="Design"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../testing/" class="btn btn-neutral float-right" title="Testing">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -226,10 +375,10 @@ consistency and integrity.</p>
   <span class="rst-current-version" data-toggle="rst-current-version">
     
     
-      <span><a href="../requirements/" style="color: #fcfcfc">&laquo; Previous</a></span>
+      <span><a href="../design/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
-      <span><a href="../design/" style="color: #fcfcfc">Next &raquo;</a></span>
+      <span><a href="../testing/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>

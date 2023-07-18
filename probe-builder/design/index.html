@@ -49,15 +49,15 @@
               <ul>
                   <li class="toctree-l1"><a class="reference internal" href="../../cluster-probe/requirements/">Requirements</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../cluster-probe/implementation/">Implementation</a>
-                  </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../cluster-probe/design/">Design</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../cluster-probe/implementation/">Implementation</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../cluster-probe/testing/">Testing</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../cluster-probe/user-guide/">User guide</a>
                   </li>
-                  <li class="toctree-l1"><a class="" href="../../cluster-probe/api-specification.md">Api specification</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../cluster-probe/api-specification/">Api specification</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">Probe Builder</span></p>
@@ -65,6 +65,8 @@
                   <li class="toctree-l1"><a class="" href="../introduction.md">Requirements</a>
                   </li>
                   <li class="toctree-l1 current"><a class="reference internal current" href="./">Design</a>
+    <ul class="current">
+    </ul>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../implementation/">Implementation</a>
                   </li>
@@ -99,12 +101,26 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                
+                <h4 id="design">Design</h4>
+<p>The design of the Probe Builder is geared toward providing a user-friendly tool designed to streamline the creation and reporting of JMeter service tests,
+specifically tailored for the integration with the Cluster Probe software running in a Kubernetes cluster.</p>
+<p>The UI allows users to effortlessly configure JMeter tests by communicating with the Spring
+Boot REST API Controller, which then delegates tasks to the JMeter Service.</p>
+<p>The JMeter Service interacts with JMeter using the JMeter Java API, executing the specified tests and generating CSV files containing
+test data. After test completion, the JMeter Service interacts with the JMeter Repository and the Report Creator.</p>
+<p>The JMeter Repository stores test-related information, while the Report Creator generates informative plots for easy test result analysis. Data is passed by
+through different components with the JmeterResultData and JMeterSpecification classes, thanks to that data exchange between different
+layers is well organized and cohesive.</p>
+<p>In designing Probe Builder, the focus was put on modularity and simplicity by ensuring clear separation of concerns and well-defined architectural boundaries.
+This approach promotes code usability and fosters a more organized workflow. By leveraging JMeter's Java API, Probe Builder integrates with JMeter, enabling the
+tool to leverage JMeter's testing capabilities for
+flexible and scalable testing scenarios.</p>
+<p><img alt="design" src="../../img/ProbeBuilder.png" /></p>
               
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../../cluster-probe/user-guide/" class="btn btn-neutral float-left" title="User guide"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../../cluster-probe/api-specification/" class="btn btn-neutral float-left" title="Api specification"><span class="icon icon-circle-arrow-left"></span> Previous</a>
         <a href="../implementation/" class="btn btn-neutral float-right" title="Implementation">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
@@ -128,7 +144,7 @@
   <span class="rst-current-version" data-toggle="rst-current-version">
     
     
-      <span><a href="../../cluster-probe/user-guide/" style="color: #fcfcfc">&laquo; Previous</a></span>
+      <span><a href="../../cluster-probe/api-specification/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
       <span><a href="../implementation/" style="color: #fcfcfc">Next &raquo;</a></span>
