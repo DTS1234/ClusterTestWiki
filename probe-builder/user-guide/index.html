@@ -53,7 +53,7 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../cluster-probe/implementation/">Implementation</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../cluster-probe/testing/">Testing</a>
+                  <li class="toctree-l1"><a class="" href="../../cluster-probe/testing.md">Testing</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../cluster-probe/user-guide/">User guide</a>
                   </li>
@@ -71,6 +71,12 @@
                   <li class="toctree-l1"><a class="reference internal" href="../testing/">Testing</a>
                   </li>
                   <li class="toctree-l1 current"><a class="reference internal current" href="./">User guide</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#probe-builder-jar-file">Probe builder jar file</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#user-interface">User interface</a>
+    </li>
+    </ul>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../api-specification/">Api specification</a>
                   </li>
@@ -99,7 +105,42 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                
+                <h3 id="introduction">Introduction</h3>
+<p>In order to start using probe-builder you would most likely first want to set up the <a href="../../cluster-probe/user-guide/">cluster-probe</a>.
+Once you have an instance or a kubernetes cluster running with cluster-probe, you can start using the probe-builder.</p>
+<h4 id="probe-builder-jar-file">Probe builder jar file</h4>
+<p>The easiest way to run a probe-builder is to run a jar file, you can download it here:</p>
+<ul>
+<li><a href="../probebuilder.jar" download><a href="../probebuilder.jar">probe-builder</a></a> 1.0.0</li>
+</ul>
+<p>then you can execute a java command to run it:</p>
+<p><code>java -jar path/to/the/file/probebuilder.jar</code></p>
+<p>now you can enter the browser under the: `localhost:4040' and you should be able to access the probe-builder ui.</p>
+<h4 id="user-interface">User interface</h4>
+<p><img alt="img_1.png" src="../img_1.png" /></p>
+<p>on the left side you can configure your tests and on the left side after clicking submit you will see the generated payload for your configuration.</p>
+<p><img alt="img_2.png" src="../img_2.png" /></p>
+<p>You can use the generated value for a given test to populate the body form:</p>
+<p><img alt="img_4.png" src="../img_4.png" /></p>
+<p>You can configure the values for your jmeter test as well:</p>
+<p><strong>Number of threads</strong>: Allows the user to input the number of threads for the JMeter test, representing the number of virtual users that will be used to
+simulate
+concurrent requests.</p>
+<p><strong>Ramp-Up Period</strong>: Allows the user to specify the ramp-up period for the JMeter test, representing the time (in seconds) taken to reach the maximum number of
+threads specified.</p>
+<p><strong>IP</strong>: Allows the user to input the IP address of the target server where the JMeter test will be performed.</p>
+<p><strong>Port</strong>: Allows the user to input the port number on which the target server is running.</p>
+<p><strong>Path</strong>: Allows the user to input the API path for the JMeter test.</p>
+<p><strong>Method</strong>: Allows the user to specify the HTTP method (e.g., GET, POST) to be used in the JMeter test.</p>
+<p>Once we click the submit button, the results table will be populated with our tests:</p>
+<p><img alt="img_5.png" src="../img_5.png" /></p>
+<p>where red background informs the user about the fact that the test has not been finished yet where the green background is applied to the tests have been
+finished.</p>
+<p>For each test there is a result file generated with the name of 'test{testId}.csv'.</p>
+<p><img alt="img_6.png" src="../img_6.png" /></p>
+<p>as well as a html file with the plots:</p>
+<p><img alt="img_7.png" src="../img_7.png" /></p>
+<p><img alt="img_9.png" src="../img_9.png" /></p>
               
             </div>
           </div><footer>

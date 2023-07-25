@@ -53,7 +53,7 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../implementation/">Implementation</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../testing/">Testing</a>
+                  <li class="toctree-l1"><a class="" href="../testing.md">Testing</a>
                   </li>
                   <li class="toctree-l1 current"><a class="reference internal current" href="./">User guide</a>
                   </li>
@@ -99,12 +99,61 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                
+                <p>To run a local Kubernetes (k8s) cluster with Cluster Probe, follow these steps:</p>
+<ol>
+<li>
+<p>Install Minikube:
+   Before deploying the cluster, make sure you have Minikube installed. Minikube allows you to run a local Kubernetes cluster on your machine.</p>
+</li>
+<li>
+<p>Start Minikube:
+   Launch the Minikube cluster by running <code>minikube start</code> in your terminal. This will create a Kubernetes instance on your local machine.</p>
+</li>
+<li>
+<p>Enable Metrics Server:
+   Metrics Server is required for autoscaling. Enable it by executing <code>minikube addons enable metrics-server</code>.</p>
+</li>
+<li>
+<p>Apply Kubernetes Configuration Files:
+   In the Cluster Probe repository, you will find two Kubernetes files, <code>deployment.yaml</code> and <code>service.yaml</code>. Apply these files to deploy the Cluster Probe
+   image in your local Kubernetes cluster. The Docker image used in the deployment is defined in the root directory's <code>Dockerfile</code>.</p>
+</li>
+</ol>
+<p>```dockerfile
+   # Dockerfile
+   FROM bellsoft/liberica-openjdk-alpine-musl:17
+   VOLUME /tmp</p>
+<p>RUN apk update &amp;&amp; apk add stress-ng</p>
+<p>COPY target/*.jar app.jar
+   ENTRYPOINT ["java","-jar","/app.jar"]
+   ```</p>
+<p>This docker images is available publicly at the <a href="https://hub.docker.com/repository/docker/9909733/cluster-probe/general">docker hub registry</a> </p>
+<p>To deploy the application, run the following commands:
+   <code>kubectl apply -f deployment.yaml
+   kubectl apply -f service.yaml</code></p>
+<ol>
+<li>
+<p>Expose the Service:
+   To test the service on your local machine, you need to expose it. Run <code>minikube service cluster-probe-service</code> to expose the Cluster Probe service.</p>
+</li>
+<li>
+<p>Monitor the Cluster:
+   In another terminal, start the Minikube dashboard using <code>minikube dashboard</code>. The dashboard provides a graphical interface to monitor the cluster's
+   resources.</p>
+</li>
+<li>
+<p>Configure Autoscaling:
+   Optionally, you can set up autoscaling for the Cluster Probe deployment. For example, to configure autoscaling based on CPU usage, use the following command:
+   <code>kubectl autoscale deployment cluster-probe --cpu-percent=30 --min=1 --max=10</code></p>
+</li>
+</ol>
+<p>With these steps, you have set up a local Kubernetes cluster with Cluster Probe deployed. You can now test and monitor the application using the Minikube
+dashboard and verify the autoscaling behavior if configured.</p>
               
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../testing/" class="btn btn-neutral float-left" title="Testing"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../implementation/" class="btn btn-neutral float-left" title="Implementation"><span class="icon icon-circle-arrow-left"></span> Previous</a>
         <a href="../api-specification/" class="btn btn-neutral float-right" title="Api specification">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
@@ -128,7 +177,7 @@
   <span class="rst-current-version" data-toggle="rst-current-version">
     
     
-      <span><a href="../testing/" style="color: #fcfcfc">&laquo; Previous</a></span>
+      <span><a href="../implementation/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
       <span><a href="../api-specification/" style="color: #fcfcfc">Next &raquo;</a></span>

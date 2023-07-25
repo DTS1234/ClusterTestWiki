@@ -53,7 +53,7 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../cluster-probe/implementation/">Implementation</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../cluster-probe/testing/">Testing</a>
+                  <li class="toctree-l1"><a class="" href="../../cluster-probe/testing.md">Testing</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../cluster-probe/user-guide/">User guide</a>
                   </li>
@@ -71,10 +71,6 @@
     <li class="toctree-l2"><a class="reference internal" href="#introduction">Introduction</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#jmeterservice">JmeterService</a>
-        <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#jmeterrepository">JmeterRepository</a>
-    </li>
-        </ul>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#report-creator">Report Creator</a>
     </li>
@@ -128,9 +124,142 @@ the <a href="https://spring.io/projects/spring-boot">Spring Boot Framework</a>.<
 <p>The main server side code is implemented in the jmeter package that stores all the important classes connected with the jmeter integration as well as reporting
 and test results data management.</p>
 <h3 id="jmeterservice">JmeterService</h3>
-<h4 id="jmeterrepository">JmeterRepository</h4>
+<p>Most of the methods in this class are focused around the Jmeter test preparation and execution, there are several methods that use directly
+the <a href="https://jmeter.apache.org/api/index.html">Jmeter Java API</a> like:</p>
+<pre><code>@NotNull
+private static TestPlan buildTestPlan() {
+    TestPlan testPlan = new TestPlan(&quot;Create JMeter Script From Java Code&quot;);
+    testPlan.setProperty(TestElement.TEST_CLASS, TestPlan.class.getName());
+    testPlan.setProperty(TestElement.GUI_CLASS, TestPlanGui.class.getName());
+    testPlan.setUserDefinedVariables((Arguments) new ArgumentsPanel().createTestElement());
+    return testPlan;
+}
+</code></pre>
+<p>or</p>
+<pre><code>@NotNull
+private static ThreadGroup buildThreadGroup(JmeterSpecification spec, LoopController loopController) {
+    ThreadGroup threadGroup = new ThreadGroup();
+    threadGroup.setName(&quot;Thread Group&quot;);
+    threadGroup.setNumThreads(spec.getNumberOfThreads());
+    threadGroup.setRampUp(spec.getRampUpPeriod());
+    threadGroup.setSamplerController(loopController);
+    threadGroup.setProperty(TestElement.TEST_CLASS, ThreadGroup.class.getName());
+    threadGroup.setProperty(TestElement.GUI_CLASS, ThreadGroupGui.class.getName());
+    return threadGroup;
+}
+</code></pre>
+<p>where you can see that <code>JmeterSpecification</code> parameters are passed to some fields of the <code>threadGroup</code> configuration.</p>
+<p>All the jmeter builder methods are used in the main public <code>jmeterStart</code> method.</p>
+<pre><code>// First HTTP Sampler
+HTTPSamplerProxy sampler = buildSampler(spec);
+
+// Loop Controller
+LoopController loopController = buildLoopController();
+
+// Thread Group
+ThreadGroup threadGroup = buildThreadGroup(spec, loopController);
+
+// Test Plan
+TestPlan testPlan = buildTestPlan();
+</code></pre>
+<p>after all the tests elements are set up, there is a thread prepared and executed with the testPlan constructed:</p>
+<pre><code>Thread thread = new Thread(() -&gt; {
+
+        String date = LocalDateTime.now().format(DateTimeFormatter.ofPattern(&quot;yyyy-MM-dd HH:mm:ss&quot;));
+        repo.save(new JmeterResultData(date, fileName + &quot;.jtl&quot;, fileName + &quot;.jmx&quot;,
+            String.valueOf(spec.getNumberOfThreads()),
+            String.valueOf(spec.getRampUpPeriod()),
+            spec.getPath(),
+            false
+        ));
+
+        jmeter.run();
+
+        ReportCreator.create(fileName+&quot;.csv&quot;);
+
+        repo.save(new JmeterResultData(date, fileName + &quot;.csv&quot;, fileName + &quot;.jmx&quot;,
+            String.valueOf(spec.getNumberOfThreads()),
+            String.valueOf(spec.getRampUpPeriod()),
+            spec.getPath(),
+            true
+        ));
+    });
+
+</code></pre>
+<p><code>JmeterResultData</code> for a test is saved just before the test invocation as well as just after it. There is also a report created with a
+static <code>ReportCreator.create()</code> method call.</p>
 <h3 id="report-creator">Report Creator</h3>
+<p><code>ReportCreator</code> class takes advantage of the tablesaw library for plotting. The main method for this class is a <code>create</code> method.
+This method is a static utility method that takes a file path as input and generates a report based on the data present in the file.</p>
+<p>The method reads data from a CSV file specified by the file parameter and loads it into a Tablesaw Table object. Later on latency and success categories are
+calculated.</p>
+<p>Then the method creates plots:</p>
+<ul>
+<li>"Errors and Success" plot: A horizontal bar plot showing the count of successful and failed operations.</li>
+<li>"Latency over time" plot: A time series plot showing how the latency (response time) changes over time (represented by the "count" column).</li>
+</ul>
+<p>At the end the method generates an HTML report file containing the two plots using the ReportData class. The report file is named based on the input CSV file
+but with a ".html" extension.</p>
+<pre><code>public static ReportData create(String file) {
+
+        try {
+            Table table = Table.read().file(new File(file));
+            table.addColumns(DoubleColumn.create(&quot;count&quot;, IntStream.range(1, table.rowCount() + 1).toArray()));
+
+            DoubleColumn latencySeconds = table.intColumn(&quot;Latency&quot;).divide(1000).setName(&quot;Latency seconds&quot;);
+            table.addColumns(latencySeconds);
+
+            CategoricalColumn&lt;?&gt; success = table.categoricalColumn(&quot;success&quot;);
+            Table successCategory = success.countByCategory();
+
+            Figure errrorsAndSuccessPlot = HorizontalBarPlot.create(&quot;Errors and success&quot;, successCategory, &quot;Category&quot;, &quot;Count&quot;);
+            Figure latencyOverTime = TimeSeriesPlot.create(&quot;Latency over time&quot;, table, &quot;count&quot;, &quot;Latency seconds&quot;);
+
+            return new ReportData(
+                createHTMLFile(&quot;report&quot; + file.replaceAll(&quot;.csv&quot;, &quot;.html&quot;), Arrays.asList(latencyOverTime, errrorsAndSuccessPlot)),
+                String.valueOf(getErrorCount(successCategory)),
+                getLatencyMean(table)
+            );
+
+        } catch (IOException e) {
+            throw new IllegalStateException(&quot;Failed to create a report for &quot; + file);
+        }
+
+    }
+</code></pre>
 <h3 id="controller">Controller</h3>
+<p>Similar as for to the cluster-probe, probe-builder exposes its Rest API with a Spring Boot RestController class.</p>
+<p>There are two main methods for this <code>Controller</code>:</p>
+<ul>
+<li><code>jmeterRun</code> - This method is the handler for the "/run" POST endpoint. It takes a JmeterSpecification object as input, which is deserialized from the request
+  body using @RequestBody. If the spec is not provided (null), it creates a default JmeterSpecification object and starts the JMeter test with the default
+  values. Otherwise, it starts the JMeter test with the specified JmeterSpecification.</li>
+<li><code>results</code> - This method is the handler for the "/results" GET endpoint. It returns a Map of JmeterResultData, which contains the results of JMeter tests performed by the
+  jmeterService.</li>
+</ul>
+<pre><code>@RestController
+@RequiredArgsConstructor
+public class Controller {
+
+    private final JmeterService jmeterService;
+
+    @PostMapping(&quot;/run&quot;)
+    @CrossOrigin
+    public void jmeterRun(@RequestBody JmeterSpecification spec) throws IOException {
+        if (spec == null) {
+            jmeterService.jmeterStart(new JmeterSpecification(100, 20, &quot;localhost&quot;, 8080, &quot;/api/load&quot;, &quot;POST&quot;, &quot;{\&quot;key1\&quot;:\&quot;value1\&quot;}&quot;));
+        } else {
+            jmeterService.jmeterStart(spec);
+        }
+    }
+
+    @GetMapping(&quot;/results&quot;)
+    @CrossOrigin
+    public Map&lt;String, JmeterResultData&gt; results() {
+        return jmeterService.getAllResults();
+    }
+}
+</code></pre>
               
             </div>
           </div><footer>
