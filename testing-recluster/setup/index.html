@@ -5,15 +5,15 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <link rel="shortcut icon" href="../../img/favicon.ico" />
-    <title>Api specification - Cluster Test Wiki</title>
+    <title>Setup - Cluster Test Wiki</title>
     <link rel="stylesheet" href="../../css/theme.css" />
     <link rel="stylesheet" href="../../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
     
       <script>
         // Current page data
-        var mkdocs_page_name = "Api specification";
-        var mkdocs_page_input_path = "probe-builder/api-specification.md";
+        var mkdocs_page_name = "Setup";
+        var mkdocs_page_input_path = "testing-recluster/setup.md";
         var mkdocs_page_url = null;
       </script>
     
@@ -53,26 +53,18 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../cluster-probe/implementation/">Implementation</a>
                   </li>
-                  <li class="toctree-l1"><a class="" href="../../cluster-probe/testing.md">Testing</a>
-                  </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../cluster-probe/user-guide/">User guide</a>
-                  </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../../cluster-probe/api-specification/">Api specification</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">Probe Builder</span></p>
-              <ul class="current">
-                  <li class="toctree-l1"><a class="" href="../introduction.md">Requirements</a>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../probe-builder/requirements/">Requirements</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../design/">Design</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../probe-builder/design/">Design</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../implementation/">Implementation</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../probe-builder/implementation/">Implementation</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../testing/">Testing</a>
-                  </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../user-guide/">User guide</a>
-                  </li>
-                  <li class="toctree-l1 current"><a class="reference internal current" href="./">Api specification</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../../probe-builder/user-guide/">User guide</a>
                   </li>
               </ul>
       </div>
@@ -89,8 +81,7 @@
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href="../.." class="icon icon-home" aria-label="Docs"></a> &raquo;</li>
-          <li>Probe Builder &raquo;</li>
-      <li>Api specification</li>
+      <li>Setup</li>
     <li class="wy-breadcrumbs-aside">
     </li>
   </ul>
@@ -99,13 +90,49 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                
+                <h3 id="introduction">Introduction</h3>
+<p>In this section you will find a guide on how to run tests on reCluster, with ClusterProbe and ProbeBuilder.</p>
+<h3 id="ssh-setup">SSH setup</h3>
+<p>In order to access reCluster you need a configured ssh connection with reLaptop.
+If you don't have an access, you need to reach Lorenzo Angeli, the project owner.
+Also remember to configure the VPN connection with the university network (https://icts.unitn.it/en/vpn).</p>
+<p>Having an ssh connection configured you should be able to connect to the reLaptop:</p>
+<p><code>ssh user@10.196.37.164</code> where <code>user</code> would be your username.</p>
+<p>now you can ssh to reCluster:</p>
+<p><code>ssh recluster</code></p>
+<h3 id="scripts">Scripts</h3>
+<p>Once you will be logged in into the reCluster you will be able to find a set of scripts in the root directory:</p>
+<ul>
+<li>pod.sh - this script will keep track of the amount of pods for a specified amount of time, the results will be saved in files node_name_pod_counts.csv. You
+  need to specify the amount of seconds for which this script will be running, it should be equal to the duration of the test.</li>
+<li>hpa.sh - this script will set a specified target for horizontal pod autoscaling, if no arguments will be passed the default value is 80. By default the maximum
+  amount of pods is set to 1000.</li>
+<li>no_csa.sh - this script turns off the cluster-autoscaling by constraining the amount of pods to the capacity of the controller.</li>
+<li>unassing_node.sh - this script unassigned the node from the node pool, the node will be turned off. You need to pass the id of the node as an arugment.</li>
+<li>downscale.sh - this script will delete horizontal pod autoscaling and downscale pods to 1</li>
+</ul>
+<h3 id="test-running">Test running</h3>
+<p>Before you run the test make sure that cluster-probe is running by checking:</p>
+<p><code>kubectl get pods</code></p>
+<p><img alt="img.png" src="../../img/cluster-pod.png" /></p>
+<p>if the result is different you should create a deployment:</p>
+<p><code>kubectl apply -f clusterProbe_test.yaml</code></p>
+<p>Now if you want to configure your cluster or track the pods count you can run one of the <a href="./#scripts">scripts</a></p>
+<p>In order to run tests from the ProbeBuilder you need to configure port forwarding with ssh. Open another window in your terminal and run:</p>
+<p><code>ssh -L 9090:localhost:9090 user@10.196.37.164</code></p>
+<p>and now another forward to reCluster:</p>
+<p><code>ssh -L 9090:10.43.252.50:8080 root@recluster</code></p>
+<p>Now you can run test from your machine on localhost:9090.</p>
+<p>If you additionally what to be able to monitor your tests you should create similar forwarding on port 3030:</p>
+<p>relaptop:
+<code>ssh -L 3030:localhost:3030 user@10.196.37.164</code></p>
+<p>recluster:
+<code>ssh -L 3030:localhost:8080 recluster</code></p>
+<p>Now you should be able to see the table of nodes in the scaling page of ProbeBuilder:</p>
+<p><img alt="img.png" src="../../img/monitor.png" /></p>
               
             </div>
           </div><footer>
-    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../user-guide/" class="btn btn-neutral float-left" title="User guide"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-    </div>
 
   <hr/>
 
@@ -126,8 +153,6 @@
   <div class="rst-versions" role="note" aria-label="Versions">
   <span class="rst-current-version" data-toggle="rst-current-version">
     
-    
-      <span><a href="../user-guide/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
   </span>
